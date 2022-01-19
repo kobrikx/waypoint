@@ -1,83 +1,97 @@
 {{page-title @model.application.application}}
-{{#if (and
-  (not-eq this.target.currentRouteName 'workspace.projects.project.app.build')
-  (not-eq this.target.currentRouteName 'workspace.projects.project.app.release.index')
-  (not-eq this.target.currentRouteName 'workspace.projects.project.app.deployment.deployment-seq.resource')
-  (not-eq this.target.currentRouteName 'workspace.projects.project.app.release.resource')
-)}}
-<PageHeader @iconName="git-repo">
-  <div class="title">
-    <div class="title-wrapper">
-      <h1>{{@model.application.application}}</h1>
-      <WorkspaceSwitcher
-        @current={{@model.workspaceName}}
-        @route={{this.workspaceSwitcherTargetRoute.name}}
-        @models={{this.workspaceSwitcherTargetModels}}
-      />
-      {{#if this.isSwitchingWorkspace}}
-        <span class="workspace-switching-indicator">
-          <Spinner @size={{20}} />
-          {{t "page.app.switching-workspace"}}
-        </span>
-      {{/if}}
-    </div>
-  </div>
-  <div class="actions">
-    {{#if (and (project-is-remote-uppable @model.project) (not @model.releases.length))}}
-      <Actions::Up @application={{@model.application}} />
-    {{else}}
-      {{#if @model.releases.length}}
-      <LatestReleaseUrl @releases={{@model.releases}}></LatestReleaseUrl>
-      {{else}}
-      <div class="first-run-hint">
-        {{#if (and @model.builds.length @model.deployments.length)}}
-        <p>To create your first release from your latest deployment, run:</p>
-        <CopyableCode @ref="hint-release" @inline="true">
-          <code id="hint-release">waypoint release</code>
-        </CopyableCode>
-        {{else}}
-        <p>To create your first release, run the following to create a build, deployment and release:</p>
-        <CopyableCode @ref="hint-release" @inline="true">
-          <code id="hint-release">waypoint up</code>
-        </CopyableCode>
+{{#if
+  (and
+    (not-eq this.target.currentRouteName 'workspace.projects.project.app.build')
+    (not-eq this.target.currentRouteName 'workspace.projects.project.app.release.index')
+    (not-eq this.target.currentRouteName 'workspace.projects.project.app.deployments.deployment.resource')
+    (not-eq this.target.currentRouteName 'workspace.projects.project.app.release.resource')
+  )
+}}
+  <PageHeader @iconName='git-repo'>
+    <div class='title'>
+      <div class='title-wrapper'>
+        <h1>{{@model.application.application}}</h1>
+        <WorkspaceSwitcher
+          @current={{@model.workspaceName}}
+          @route={{this.workspaceSwitcherTargetRoute.name}}
+          @models={{this.workspaceSwitcherTargetModels}}
+        />
+        {{#if this.isSwitchingWorkspace}}
+          <span class='workspace-switching-indicator'>
+            <Spinner @size={{20}} />
+            {{t 'page.app.switching-workspace'}}
+          </span>
         {{/if}}
       </div>
+    </div>
+    <div class='actions'>
+      {{#if (and (project-is-remote-uppable @model.project) (not @model.releases.length))}}
+        <Actions::Up @application={{@model.application}} />
+      {{else}}
+        {{#if @model.releases.length}}
+          <LatestReleaseUrl @releases={{@model.releases}} />
+        {{else}}
+          <div class='first-run-hint'>
+            {{#if (and @model.builds.length @model.deployments.length)}}
+              <p>To create your first release from your latest deployment, run:</p>
+              <CopyableCode @ref='hint-release' @inline='true'>
+                <code id='hint-release'>waypoint release</code>
+              </CopyableCode>
+            {{else}}
+              <p>To create your first release, run the following to create a build, deployment and release:</p>
+              <CopyableCode @ref='hint-release' @inline='true'>
+                <code id='hint-release'>waypoint up</code>
+              </CopyableCode>
+            {{/if}}
+          </div>
+        {{/if}}
       {{/if}}
-    {{/if}}
-  </div>
-</PageHeader>
+    </div>
+  </PageHeader>
 
-<Pds::TabNav>
-  <LinkTo @route="workspace.projects.project.app.deployment"
-    @models={{array @model.application.project @model.application.application }}>
-    <FlightIcon @name="upload" class="tab-icon" />
-    {{t "nav.deployments"}}
-  </LinkTo>
-  <LinkTo @route="workspace.projects.project.app.builds"
-    @models={{array @model.application.project @model.application.application }}>
-    <FlightIcon @name="hammer" class="tab-icon" />
-    {{t "nav.builds"}}
-  </LinkTo>
-  <LinkTo @route="workspace.projects.project.app.releases"
-    @models={{array @model.application.project @model.application.application }}>
-    <FlightIcon @name="globe" class="tab-icon" />
-    {{t "nav.releases"}}
-  </LinkTo>
-  <LinkTo @route="workspace.projects.project.app.logs"
-    @models={{array @model.application.project @model.application.application }}>
-    <FlightIcon @name="outline" class="tab-icon" />
-    {{t "nav.logs"}}
-  </LinkTo>
-  <LinkTo @route="workspace.projects.project.app.resources"
-    @models={{array @model.application.project @model.application.application }}>
-    <FlightIcon @name="box" class="tab-icon" />
-    {{t "nav.resources"}}
-  </LinkTo>
-  <LinkTo @route="workspace.projects.project.app.exec"
-    @models={{array @model.application.project @model.application.application }}>
-    <FlightIcon @name="terminal-screen" class="tab-icon" />
-    {{t "nav.exec"}}
-  </LinkTo>
-</Pds::TabNav>
+  <Pds::TabNav>
+    <LinkTo
+      @route='workspace.projects.project.app.deployments'
+      @models={{array @model.application.project @model.application.application}}
+    >
+      <FlightIcon @name='upload' class='tab-icon' />
+      {{t 'nav.deployments'}}
+    </LinkTo>
+    <LinkTo
+      @route='workspace.projects.project.app.builds'
+      @models={{array @model.application.project @model.application.application}}
+    >
+      <FlightIcon @name='hammer' class='tab-icon' />
+      {{t 'nav.builds'}}
+    </LinkTo>
+    <LinkTo
+      @route='workspace.projects.project.app.releases'
+      @models={{array @model.application.project @model.application.application}}
+    >
+      <FlightIcon @name='globe' class='tab-icon' />
+      {{t 'nav.releases'}}
+    </LinkTo>
+    <LinkTo
+      @route='workspace.projects.project.app.logs'
+      @models={{array @model.application.project @model.application.application}}
+    >
+      <FlightIcon @name='outline' class='tab-icon' />
+      {{t 'nav.logs'}}
+    </LinkTo>
+    <LinkTo
+      @route='workspace.projects.project.app.resources'
+      @models={{array @model.application.project @model.application.application}}
+    >
+      <FlightIcon @name='box' class='tab-icon' />
+      {{t 'nav.resources'}}
+    </LinkTo>
+    <LinkTo
+      @route='workspace.projects.project.app.exec'
+      @models={{array @model.application.project @model.application.application}}
+    >
+      <FlightIcon @name='terminal-screen' class='tab-icon' />
+      {{t 'nav.exec'}}
+    </LinkTo>
+  </Pds::TabNav>
 {{/if}}
 {{outlet}}
